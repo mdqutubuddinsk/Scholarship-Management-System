@@ -1,0 +1,62 @@
+#ifndef DATABASE_H
+#define DATABASE_H
+
+#define MAX_STR 50
+#define MAX_RECORDS 100
+
+typedef struct {
+    char id[MAX_STR];
+    char name[MAX_STR];
+    float gpa;
+    float family_income;
+} Student;
+
+typedef struct {
+    char name[MAX_STR];
+    float min_gpa;
+    float max_income;
+} Scholarship;
+
+typedef struct {
+    char student_id[MAX_STR];
+    char scholarship_name[MAX_STR];
+    char status[MAX_STR]; 
+} Application;
+
+typedef struct {
+    char student_id[MAX_STR];
+    char scholarship_name[MAX_STR];
+    char date_awarded[MAX_STR];
+} AwardRecord;
+
+typedef struct {
+    Student students[MAX_RECORDS];
+    int student_count;
+    Scholarship scholarships[10];
+    int scholarship_count;
+    Application applications[MAX_RECORDS];
+    int application_count;
+    AwardRecord award_history[MAX_RECORDS];
+    int award_count;
+} Database;
+
+// Module 1 (Backend) Prototypes
+void register_student(Database *db, const char *id, const char *name, float gpa, float income);
+Student* get_student_record(Database *db, const char *id);
+void load_students_from_file(Database *db);
+void save_students_to_file(Database *db);
+
+// Module 2 Prototypes
+int apply_for_scholarship(Database *db, const char *student_id, const char *scholarship_name);
+void load_applications_from_file(Database *db);
+void save_applications_to_file(Database *db);
+
+// Module 3 Prototypes
+void verify_application(Database *db, int app_index);
+
+// Module 4 Prototypes
+void finalize_award(Database *db, int app_index);
+void load_awards_from_file(Database *db);
+void save_awards_to_file(Database *db);
+
+#endif
