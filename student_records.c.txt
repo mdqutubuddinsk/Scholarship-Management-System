@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <string.h>
+#include "database.h"
+
+// Used by the Backend Admin menu
+void register_student(Database *db, const char *id, const char *name, float gpa, float income) {
+    if (db->student_count >= MAX_RECORDS) return;
+    Student *s = &db->students[db->student_count++];
+    strcpy(s->id, id);
+    strcpy(s->name, name);
+    s->gpa = gpa;
+    s->family_income = income;
+}
+
+// Module 3 uses this to check the backend record
+Student* get_student_record(Database *db, const char *id) {
+    for (int i = 0; i < db->student_count; i++) {
+        if (strcmp(db->students[i].id, id) == 0) {
+            return &db->students[i]; // Returns the record if found
+        }
+    }
+    return NULL; // Student not found
+}
+
+void save_students_to_file(Database *db) {
+    FILE *file = fopen("students.txt", "w");
+    if (!file) return;
+    for (int i = 0; i < db->student_count; i++) {
+        fprintf(file, "%s %s %.2f %.2f\n", db->students[i].id, db->students[i].name, db->students[i].gpa, db->students[i].family_income);
+    }
+    fclose(file);
+}
+
+void load_students_from_file(Database *db) {
+    FILE *file = fopen("students.txt", "r");
+    if (!file) return; 
+    while (fscanf(file, "%s %s %f %f", db->students[db->student_count].id, db->students[db->student_count].name, &db->students[db->student_count].gpa, &db->students[db->student_count].family_income) == 4) {
+        db->student_count++;
+    }
+    fclose(file);
+}
